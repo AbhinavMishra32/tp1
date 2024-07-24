@@ -1,2 +1,0 @@
-# userstories
-learning project
