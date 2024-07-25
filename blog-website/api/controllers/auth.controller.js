@@ -3,7 +3,7 @@ import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 
 export const signup = async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
     // next(new Error("All fields are required"));
@@ -11,9 +11,7 @@ export const signup = async (req, res, next) => {
     // return res.status(400).json({ message: "All fields are required" });
   }
 
-  console.log("before hashing passw")
   const hashedPassword = await bcryptjs.hash(password, 10);
-  console.log("after hashing pass")
 
   const newUser = new User({ username, email, password: hashedPassword });
 
