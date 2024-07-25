@@ -36,7 +36,7 @@ export default function Header() {
         </Link>
         <Navbar.Toggle />
       </div>
-      <Navbar.Collapse>
+      <Navbar.Collapse className="focus:bg-gray-600">
         <Navbar.Link className={clsx("rounded-xl", { "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animated-background": path === "/" })} active={path === "/"} as={"div"}>
           <Link to='/' className={clsx("block px-4 py-2", { "text-white": path === "/" })}> Home </Link>
         </Navbar.Link>
