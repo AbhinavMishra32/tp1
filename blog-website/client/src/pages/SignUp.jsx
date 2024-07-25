@@ -1,21 +1,27 @@
-// import { FloatingLabel } from 'flowbite-react';
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
-// import { Label } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button, Checkbox, Label, TextInput, Alert, Spinner } from "flowbite-react";
+import { HiInformationCircle } from 'react-icons/hi';
 
 export default function SignUp() {
-
   const [formData, setFormData] = React.useState({});
+  const [errorMessage, setErrorMessage] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
     console.log(formData);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage("Please fill all the fields");
+    }
     try {
+      setErrorMessage(null);
+      setLoading(true);
       const res = await fetch("/api/auth/sign-up", {
         method: "POST",
         headers: {
@@ -24,9 +30,21 @@ export default function SignUp() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      console.log(data);
+      if (!data.success) {
+        setErrorMessage(data.message);
+      }
+      if (data.dbStatusCode === 11000) {
+        setErrorMessage("Username or email already exists. Please try with a different username or email.");
+      }
+
+      if (res.ok) {
+        navigate('/sign-in');
+      }
+      setLoading(false);
     } catch (error) {
+      setErrorMessage(error.message);
       console.log(error);
+      setLoading(false);
     }
   }
 
@@ -56,14 +74,26 @@ export default function SignUp() {
               <Label>Your password</Label>
               <TextInput type="password" placeholder="Password" id="password" onChange={handleChange} />
             </div>
-            <Button gradientDuoTone='purpleToPink' type="submit" className="transition-color">
-              Sign Up
+            <Button gradientDuoTone='purpleToPink' type="submit" className="transition-color" disabled={loading}>
+              {
+                loading ? (
+                  <>
+                    <Spinner size='sm' />
+                    <span className="pl-3">Loading...</span>
+                  </>
+                ) : "Sign Up"
+              }
             </Button>
-            <div className="flex gap-2 text-sm mt-1">
-              <span>Have an account?</span>
-              <Link to="/sign-in" className='text-blue-500'>Sign In</Link>
-            </div>
           </form>
+          <div className="flex gap-2 text-sm mt-1">
+            <span>Have an account?</span>
+            <Link to="/sign-in" className='text-blue-500'>Sign In</Link>
+          </div>
+          {errorMessage && (
+            <div className="">
+              <Alert className="mt-2" icon={HiInformationCircle} color="failure">{errorMessage}</Alert>
+            </div>
+          )}
         </div>
       </div>
     </div>
