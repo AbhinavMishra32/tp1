@@ -32,6 +32,7 @@ export default function SignUp() {
       const data = await res.json();
       if (!data.success) {
         setErrorMessage(data.message);
+        console.log(data);
       }
       if (data.dbStatusCode === 11000) {
         setErrorMessage("Username or email already exists. Please try with a different username or email.");
