@@ -37,15 +37,16 @@ export default function Header() {
         <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
-        <Navbar.Link className={clsx("rounded-xl", { "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animated-background": path === "/" })} active={path === "/"} as={"div"}> <Link to='/'> Home </Link>
+        <Navbar.Link className={clsx("rounded-xl", { "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animated-background": path === "/" })} active={path === "/"} as={"div"}>
+          <Link to='/' className={clsx("block px-4 py-2", { "text-white": path === "/" })}> Home </Link>
         </Navbar.Link>
         <Navbar.Link className={clsx("rounded-xl", { "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animated-background": path === "/about" })} active={path === "/about"} as={"div"}>
-          <Link to='/about'>
+          <Link to='/about' className={clsx("block px-4 py-2", { "text-white": path === "/about" })}>
             About
           </Link>
         </Navbar.Link>
         <Navbar.Link className={clsx("rounded-xl", { "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 animated-background": path === "/projects" })} active={path === "/projects"} as={"div"}>
-          <Link to='/projects'>
+          <Link to='/projects' className={clsx("block px-4 py-2", { "text-white": path === "/projects" })}>
             Projects
           </Link>
         </Navbar.Link>
