@@ -29,6 +29,6 @@ app.use((err, req, res, next) => {
     message,
     dbStatusCode: err.code || null,
   });
-  console.log(err);
+  // console.log(err);
 
 });
