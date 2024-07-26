@@ -14,8 +14,14 @@ export const signup = async (req, res, next) => {
     // return res.status(400).json({ message: "All fields are required" });
   }
 
+  const existing = await User.findOne({email});
+  console.log("existing user:", existing);
+  if (existing) {
+    next(errorHandler(400, "User with this email or username already exists."));
+  }
+
   try {
-    console.log("Data recieved: ", req.body);
+    // console.log("Data recieved: ", req.body);
     const hashedPassword = await bcryptjs.hash(password, 10);
     const newUser = new User({ username, email, password: hashedPassword });
 
@@ -28,14 +34,14 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email, password } = req.body; 
 
   if (!email || !password || email == "" || password == "") {
     next(errorHandler(400, "All fields are required"));
   }
 
   try {
-    const validUser = await User.findOne({ email })
+    const validUser = await User.findOne({ email });
     if (!validUser) {
       next(errorHandler(404, "User not found"));
     }
@@ -44,13 +50,17 @@ export const signin = async (req, res, next) => {
       next(errorHandler(401, "Invalid credentials"));
     }
 
-    const token = jwt.sign({ id: validUser._id, }, process.env.JWT_SECRET, { expiresIn: "30d" });
-    console.log("JWT TOKEN:", token);
+    const token = jwt.sign({ id: validUser._id, }, process.env.JWT_SECRET, { expiresIn: "30m" });
+
+      // seperating the password from the validUser so that hashed password is not send to the client
+      const { password: pass, ...rest } =  validUser._doc; // rest = validUser without the hashed password in the json
+    
     res.status(200).cookie("access_token", token, {
       httpOnly: true,
-    }).json(validUser);
 
-  } catch (error) {
+    }).json(rest);}
+
+  catch (error) {
     next(error);
   }
 
