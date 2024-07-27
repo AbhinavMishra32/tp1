@@ -20,15 +20,34 @@ app.use('/api/auth', authRoutes);
 
 
 // This is the error handler middleware
+// Error handler middleware should be the last one
+// app.use((err, req, res, next) => {
+//   // Log error information
+//
+//   // Ensure only one response is sent
+//   if (!res.headersSent) {
+//     const statusCode = err.statusCode || 500;
+//     const message = err.message;
+//     res.status(statusCode).json({
+//       success: false,
+//       statusCode,
+//       message,
+//       dbStatusCode: err.code || null,
+//     });
+//     console.log("Error from error handler middleware (index.js):");
+//     console.log(err);
+//   } else {
+//     console.log('Headers already sent, cannot send response.');
+//   }
+// });
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
-  const message = err.message;
+  const message = err.message || 'Internal Server Error';
   res.status(statusCode).json({
     success: false,
     statusCode,
     message,
-    dbStatusCode: err.code || null,
   });
-  // console.log(err);
-
+  console.log("Error from middleware (index.js):");
+  console.log(err);
 });

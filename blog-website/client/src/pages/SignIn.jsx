@@ -2,11 +2,15 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Checkbox, Label, TextInput, Alert, Spinner } from "flowbite-react";
 import { HiInformationCircle } from 'react-icons/hi';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
 
 export default function SignIn() {
   const [formData, setFormData] = React.useState({});
-  const [errorMessage, setErrorMessage] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+  // const [errorMessage, setErrorMessage] = React.useState(null);
+  // const [loading, setLoading] = React.useState(false);
+  const { loading, error: errorMessage } = useSelector(state => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,11 +21,13 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return setErrorMessage("Please fill all the fields");
+      return dispatch(signInFailure("Please fill all the fields"));
+      // return setErrorMessage("Please fill all the fields");
     }
     try {
-      setErrorMessage(null);
-      setLoading(true);
+      // setErrorMessage(null);
+      // setLoading(true);
+      dispatch(signInStart()); // this is setting the global state to loading, so that we can show spinner.
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: {
@@ -31,21 +37,25 @@ export default function SignIn() {
       });
       const data = await res.json();
       if (!data.success) {
-        setErrorMessage(data.message);
+        // setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
+        console.log("signInFailure dispatch from !data.success: ", data.message);
         console.log(data);
-      }
-      if (data.dbStatusCode === 11000) {
-        setErrorMessage("Username or email already exists. Please try with a different username or email.");
       }
 
       if (res.ok) {
-        navigate('/signin');
+        dispatch(signInSuccess(data));
+        navigate("/");
       }
-      setLoading(false);
+      // setLoading(false);
+      // dispatch(signInSuccess(data.user));
     } catch (error) {
-      setErrorMessage(error.message);
+      // setErrorMessage(error.message);
+      dispatch(signInFailure(error.message));
+      console.log("signInFailure dispatch from catch block: ", error.message);
       console.log(error);
-      setLoading(false);
+      // setLoading(false);
+
     }
   }
 
@@ -84,7 +94,7 @@ export default function SignIn() {
           </form>
           <div className="flex gap-2 text-sm mt-4">
             <span>Don't have an account?</span>
-            <Link to="/sign-in" className='text-blue-500'>Sign In</Link>
+            <Link to="/signup" className='text-blue-500'>Sign Up</Link>
           </div>
           {errorMessage && (
             <div className="">

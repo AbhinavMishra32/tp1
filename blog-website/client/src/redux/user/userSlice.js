@@ -22,10 +22,7 @@ const userSlice = createSlice({
     },
     signInFailure: (state, action) => {
       state.loading = false;
-      state.error = action.payload;
-    },
-    signInFailure: (state, action) => {
-      state.loading = false;
+      // payload is the argument that we pass to the function, in this case it is the error message.
       state.error = action.payload;
     },
   }

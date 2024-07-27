@@ -14,7 +14,7 @@ export const signup = async (req, res, next) => {
     // return res.status(400).json({ message: "All fields are required" });
   }
 
-  const existing = await User.findOne({email});
+  const existing = await User.findOne({ email });
   console.log("existing user:", existing);
   if (existing) {
     next(errorHandler(400, "User with this email or username already exists."));
@@ -34,31 +34,33 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-  const { email, password } = req.body; 
+  const { email, password } = req.body;
 
-  if (!email || !password || email == "" || password == "") {
+  if (!email || !password) {
     next(errorHandler(400, "All fields are required"));
   }
 
   try {
+    console.log("Data recieved:", req.body);
     const validUser = await User.findOne({ email });
     if (!validUser) {
-      next(errorHandler(404, "User not found"));
+      return next(errorHandler(404, "No account found with this email id."));
     }
     const validPassword = bcryptjs.compareSync(password, validUser.password);
     if (!validPassword) {
-      next(errorHandler(401, "Invalid credentials"));
+      return next(errorHandler(400, "Invalid email or password.")); 
     }
 
     const token = jwt.sign({ id: validUser._id, }, process.env.JWT_SECRET, { expiresIn: "30m" });
 
-      // seperating the password from the validUser so that hashed password is not send to the client
-      const { password: pass, ...rest } =  validUser._doc; // rest = validUser without the hashed password in the json
-    
+    // seperating the password from the validUser so that hashed password is not send to the client
+    const { password: pass, ...rest } = validUser._doc; // rest = validUser without the hashed password in the json
+
     res.status(200).cookie("access_token", token, {
       httpOnly: true,
 
-    }).json(rest);}
+    }).json(rest);
+  }
 
   catch (error) {
     next(error);
