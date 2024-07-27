@@ -22,7 +22,7 @@ export default function SignUp() {
     try {
       setErrorMessage(null);
       setLoading(true);
-      const res = await fetch("/api/auth/sign-up", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export default function SignUp() {
       }
 
       if (res.ok) {
-        navigate('/sign-in');
+        navigate('/signin');
       }
       setLoading(false);
     } catch (error) {
@@ -57,7 +57,7 @@ export default function SignUp() {
             <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg mr-1 text-white shadow-gray-400 shadow-sm-light">Abhinav's</span>
             Blog
           </Link>
-          <p className="text-sm mt-8">
+          <p className="text-sm mt-8 font-bold">
             This is a blog website where you can read blogs about various topics. You can also write your own blogs and share them with the world.
           </p>
         </div>
@@ -86,7 +86,7 @@ export default function SignUp() {
               }
             </Button>
           </form>
-          <div className="flex gap-2 text-sm mt-1">
+          <div className="flex gap-2 text-sm mt-4">
             <span>Have an account?</span>
             <Link to="/sign-in" className='text-blue-500'>Sign In</Link>
           </div>

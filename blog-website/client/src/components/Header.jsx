@@ -29,7 +29,7 @@ export default function Header() {
         <Button color='gray' pill>
           <FaMoon className="flex justify-center items-center" />
         </Button>
-        <Link to='/sign-in'>
+        <Link to='/signin'>
           <Button gradientDuoTone='purpleToBlue' outline>
             Sign In
           </Button>
