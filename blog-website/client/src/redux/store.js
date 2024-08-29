@@ -1,14 +1,14 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import userReducer from './user/userSlice';
-import { persistReducer } from 'redux-persist';
+import themeReducer from './theme/themeSlice';
+import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { persistStore } from 'redux-persist';
-
 // this file is used to combine all the reducers in the application. 
 // this file mostly has boilerplate code. if want see what each part does later
 
 const rootReducer = combineReducers({
-  user: userReducer,
+  user: userReducer, 
+  theme: themeReducer,
 });
 
 
