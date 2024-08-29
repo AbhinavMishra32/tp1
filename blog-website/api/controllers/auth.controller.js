@@ -80,6 +80,7 @@ export const google = async (req, res, next) => {
       }).json(rest); // sending the user data without the hashed password
     } else {
       const generatedPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8);
+      // TODO: Create a react modal in front end to do onboarding and ask for password, what are they interested in, etc
       const hashedPassword = await bcryptjs.hash(generatedPassword, 10);
       const newUser = new User({
         username: name.toLowerCase().replace(" ", "") + Math.random().toString(9).slice(-4),
